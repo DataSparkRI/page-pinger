@@ -1,3 +1,5 @@
 ENV/
 *.pyc
 *.swp
+email.conf
+urls.conf

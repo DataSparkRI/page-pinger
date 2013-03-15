@@ -22,7 +22,7 @@ urlconfig.read('urls.conf')
 
 mailer = Emailer(config_file='email.conf')
 admins = mailer.config.get('emails','to')
-
+down_list = {} # keep track of currently down urls, and counts
 
 def make_message(url, status_code):
     mssg = 'URL {0} Responded with {1}'.format(url, status_code)
@@ -32,13 +32,23 @@ def notify(url, status_code):
     # send notification to admins
     logger.error(make_message(url, status_code))
     # send email to admins
-    mailer.send_email(to_addresses=admins, subject='%s Response from Pinger' % url, body=make_message(url, status_code), from_address='do-not-reply@provplan.org')
+    if url not in down_list:
+        down_list[url] = 0
+    down_list[url] += 1
+
+    # only send down emails periodically
+    if down_list[url] % 5 == 0 or down_list[url] == 1:
+        mailer.send_email(to_addresses=admins, subject='%s Response from Pinger' % url, body=make_message(url, status_code), from_address='do-not-reply@provplan.org')
 
 def ping(url):
     r = requests.get(url)
     if r.status_code != 200:
         notify(url, r.status_code)
     else:
+        # if status code is 200 and this url has been down, take it out of our
+        # down list
+        if url in down_list:
+            del down_list[url]
         logger.info(make_message(url, r.status_code))
 
 def signal_handler(signal, frame):
