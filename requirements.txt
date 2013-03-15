@@ -1,0 +1,6 @@
+argparse==1.2.1
+meld3==0.6.10
+-e git+git@github.com:ProvidencePlan/ProvplanEmailLib.git@#egg=provplan_email_lib
+requests==1.1.0
+supervisor==3.0b1
+wsgiref==0.1.2
