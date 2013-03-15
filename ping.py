@@ -10,7 +10,7 @@ parser.add_argument('-t', action="store", dest="time", type=int,  help='Time bet
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-lfh = logging.FileHandler(filename='var/log/pinger.log')
+lfh = logging.FileHandler(filename='/var/log/pinger.log')
 formatter = logging.Formatter('%(asctime)s - %(levelname)s : %(message)s')
 lfh.setFormatter(formatter)
 logger.addHandler(lfh)
