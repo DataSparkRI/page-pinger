@@ -17,10 +17,10 @@ logger.addHandler(lfh)
 
 # get urls from conf
 urlconfig = ConfigParser.SafeConfigParser()
-urlconfig.read('urls.conf')
+urlconfig.read(os.path.join(os.path.dirname(__file__), 'urls.conf'))
 
 
-mailer = Emailer(config_file='email.conf')
+mailer = Emailer(config_file=os.path.join(os.path.dirname(__file__),'email.conf'))
 admins = mailer.config.get('emails','to')
 down_list = {} # keep track of currently down urls, and counts
 
