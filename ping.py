@@ -21,7 +21,7 @@ urlconfig.read(os.path.join(os.path.dirname(__file__), 'urls.conf'))
 
 
 mailer = Emailer(config_file=os.path.join(os.path.dirname(__file__),'email.conf'))
-admins = mailer.config.get('emails','to')
+admins = mailer.config.get('emails','to').split(',')
 down_list = {} # keep track of currently down urls, and counts
 
 def make_message(url, status_code):
@@ -38,7 +38,8 @@ def notify(url, status_code):
 
     # only send down emails periodically
     if down_list[url] % 5 == 0 or down_list[url] == 1:
-        mailer.send_email(to_addresses=admins, subject='%s Response from Pinger' % url, body=make_message(url, status_code), from_address='do-not-reply@provplan.org')
+        for admin in admins:
+            mailer.send_email(to_addresses=admin, subject='%s Response from Pinger' % url, body=make_message(url, status_code), from_address='do-not-reply@provplan.org')
 
 def ping(url):
     r = requests.get(url)
